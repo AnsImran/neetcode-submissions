@@ -1,0 +1,92 @@
+# from collections import deque
+
+# class Solution:
+#     def orangesRotting(self, grid: List[List[int]]) -> int:
+
+#         q      = deque()
+#         visits = set()
+#         time   = 0
+
+#         rows, cols = len(grid), len(grid[0])
+
+#         # find all the initial ro-- fr--. ) O(m*n) time & space
+#         for i in range(len(grid)):
+#             for j in range(len(grid[i])):
+#                 if grid[i][j] == 2:
+#                     q.append((i,j))
+#                     visits.add((i,j))
+        
+#         # finding the min time to ro-- the fr-- O(m*n) time and space
+#         while q:
+#             for i in range(len(q)):
+#                 r, c = q.pop()
+#                 neighbors = [[1,0], [-1,0], [0,1], [0,-1]]
+#                 for dr, dc in neighbors:
+#                     r_curr = r+dr 
+#                     c_curr = c+dc
+#                     if min(r_curr,c_curr)<0 or r_curr==rows or c_curr==cols or grid[r_curr][c_curr]==0 or (r_curr,c_curr) in visits:
+#                         continue
+#                     q.append((r_curr, c_curr))
+#                     visits.add((r_curr, c_curr))
+#             # if len(q)>0:
+#             time+=1
+        
+#         # checking if any fre-- fr-- left O(m*n)
+#         c=0
+#         for i in range(len(grid)):
+#             for j in range(len(grid[0])):
+#                 if grid[i][j]==1:
+#                     c+=1
+#                     if (i,j) not in visits:
+#                         return -1
+#         if c==0:
+#             time=0
+#         if c==1 and time!=0:
+#             time=1
+#         return time
+
+
+from collections import deque
+
+class Solution:
+    def orangesRotting(self, grid: List[List[int]]) -> int:
+        q      = deque()
+        visits = set()
+        time   = 0
+        rows, cols = len(grid), len(grid[0])
+
+        for i in range(rows):
+            for j in range(cols):
+                if grid[i][j] == 2:
+                    q.append((i, j))
+                    visits.add((i, j))                 # fix 1: store the position
+
+        neighbors = [[1,0], [-1,0], [0,1], [0,-1]]
+        while q:                                       # fix 2
+            for _ in range(len(q)):
+                r, c = q.popleft()                     # fix 3
+                for dr, dc in neighbors:
+                    r_curr, c_curr = r + dr, c + dc
+                    if (min(r_curr, c_curr) < 0 or r_curr == rows or c_curr == cols
+                            or grid[r_curr][c_curr] == 0
+                            or (r_curr, c_curr) in visits):   # fix 1: check the position
+                        continue
+                    q.append((r_curr, c_curr))
+                    visits.add((r_curr, c_curr))
+            time += 1
+
+        for i in range(rows):
+            for j in range(cols):
+                if grid[i][j] == 1 and (i, j) not in visits:
+                    return -1
+        return max(0, time - 1)                        # fixes 4 and 5
+                    
+        
+
+
+
+
+        
+
+
+        
